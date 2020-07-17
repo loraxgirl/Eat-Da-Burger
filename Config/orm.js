@@ -1,65 +1,81 @@
-var connection = require('../config/connection.js');
+var connection = require("../config/connection.js");
 
-// Helper function for SQL syntax
-function printQuestionMarks(num){
-  var arr = [];
-  for (var i=0; i<num; i++){
-    arr.push('?')
-  }
-  return arr.toString();
+function printQuestionMarks(num) {
+    var arr = [];
+    for (var i = 0; i < num; i++) {
+        arr.push("?");
+    }
+    return arr.toString();
 }
 
-// Helper function for SQL syntax
-function objToSql(ob){
-  var arr = [];
-  for (var key in ob) {
-    arr.push(key + '=' + ob[key]);
-  }
-  return arr.toString();
+function objToSql(ob) {
+    var arr = [];
+    for (var key in ob) {
+        var value = ob[key];
+        if (Object.hasOwnProperty.call(ob, key)) {
+            if (typeof value === "string" && value.indexOf(" ") >= 0) {
+                value = "'" + value + "'";
+            }
+            arr.push(key + "=" + value);
+        }
+    }
+    return arr.toString();
 }
 
-// Object for all SQL functions
 var orm = {
-    all: function(tableInput, cb) {
-        var queryString = 'SELECT * FROM ' + tableInput + ';';
+    selectAll: function(table, cb) {
+        var queryString = "SELECT * FROM " + table + ";";
         connection.query(queryString, function(err, result) {
-            if (err) throw err;
+            if (err) {
+                throw err;
+            }
             cb(result);
         });
     },
 
-    //vals is an array of values we want to save to cols, cols are the columns to insert the values into
-    // this is creating a new/inserting a new burger
-    create: function(table, cols, vals, cb) {
-      var queryString = 'INSERT INTO ' + table;
-      queryString = queryString + ' (';
-      queryString = queryString + cols.toString();
-      queryString = queryString + ') ';
-      queryString = queryString + 'VALUES (';
-      queryString = queryString + printQuestionMarks(vals.length);
-      queryString = queryString + ') ';
-
-      connection.query(queryString, vals, function(err, result) {
-        if (err) throw err;
-        cb(result);
-      });
+    insertOne: function(table, cols, vals, cb) {
+        var queryString = "INSERT INTO " + table;
+        queryString += " (";
+        queryString += cols.toString();
+        queryString += ") ";
+        queryString += "VALUES (";
+        queryString += printQuestionMarks(vals.length);
+        queryString += ") ";
+        console.log(queryString);
+        connection.query(queryString, vals, function(err, result) {
+            if (err) {
+                throw err
+            }
+            cb(result);
+        });
     },
 
-    //objColVals would be columns & values you want to update    ex: {burger name: devour: true}
-    //update existing burger
-    update: function(table, objColVals, condition, cb) {
-      var queryString = 'UPDATE ' + table;
+    updateOne: function(table, objColVals, condition, cb) {
+        var queryString = "UPDATE " + table;
+        queryString += " SET ";
+        queryString += objToSql(objColVals);
+        queryString += " WHERE ";
+        queryString += condition;
+        console.log(queryString);
+        connection.query(queryString, function(err, result) {
+            if (err) {
+                throw err
+            }
+            cb(result);
+        });
+    },
 
-      queryString = queryString + ' SET ';
-      queryString = queryString + objToSql(objColVals);
-      queryString = queryString + ' WHERE ';
-      queryString = queryString + condition;
-
-      console.log(queryString)
-      connection.query(queryString, function(err, result) {
-        if (err) throw err;
-        cb(result);
-      });
+    deleteOne: function(table, condition, cb) {
+        var queryString = "DELETE FROM " + table;
+        queryString += " WHERE ";
+        queryString += condition;
+        console.log(queryString);
+        connection.query(queryString, function(err, result) {
+            if (err) {
+                throw err
+            }
+            cb(result);
+        });
     }
 };
 

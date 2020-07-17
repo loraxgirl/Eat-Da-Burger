@@ -1,8 +1,15 @@
 {
   "name": "eat-da-burger",
   "version": "1.0.0",
-  "description": "burger logger",
+  "description": "_created by Krista Clarke (github - loraxgirl)_<br> **A Burger Logger made with MySQL and ORMs**",
   "main": "server.js",
+  "dependencies": {
+    "express-handlebars": "^5.1.0",
+    "express": "^4.17.1",
+    "method-override": "^3.0.0",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -16,10 +23,5 @@
   "bugs": {
     "url": "https://github.com/loraxgirl/Eat-Da-Burger/issues"
   },
-  "homepage": "https://github.com/loraxgirl/Eat-Da-Burger#readme",
-  "dependencies": {
-    "express": "^4.17.1",
-    "express-handlebars": "^5.1.0",
-    "mysql": "^2.18.1"
-  }
+  "homepage": "https://github.com/loraxgirl/Eat-Da-Burger#readme"
 }
